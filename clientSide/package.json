@@ -1,0 +1,15 @@
+{
+  "name": "nodeDemo-clientSide",
+  "version": "0.0.0",
+  "description": "client-side code for nodeAppDemo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher Beley",
+  "license": "unlicense",
+  "devDependencies": {},
+  "dependencies": {
+    "jquery": "^2.1.1"
+  }
+}
