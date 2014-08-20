@@ -27,7 +27,7 @@ function logAndSendError(error, req, res) {
 
 module.exports = function (req, res) {
   var joinedData = {}, employeeWriter, salaryWriter, busboy, error = null,
-      gotEmployees = false, gotSalaries = false, busboyOptions;
+      gotEmployees = false, gotSalaries = false, busboyOptions, stats = {};
 
   busboyOptions = {
     headers: req.headers,
@@ -42,8 +42,8 @@ module.exports = function (req, res) {
     return logAndSendError(ex, req, res);
   }
 
-  employeeWriter = employeeDataWriter(joinedData);
-  salaryWriter = salaryDataWriter(joinedData);
+  employeeWriter = employeeDataWriter(joinedData, stats);
+  salaryWriter = salaryDataWriter(joinedData, stats);
 
   busboy.on("file", function (fieldname, file) {
     // The client will always send the employees data first, so we can rely on employees
@@ -78,6 +78,8 @@ module.exports = function (req, res) {
   });
 
   busboy.on("finish", function () {
+    var responseData;
+
     if (error) {
       logAndSendError(error, req, res);
     }
@@ -87,7 +89,21 @@ module.exports = function (req, res) {
     }
     else {
       debug("[info] Successfully parsed data for client at " + req.ip);
-      res.send({success: true, data: joinedData});
+
+      responseData = {
+        success: true,
+        employees: joinedData,
+        stats: {
+          averageSalary: stats.totalSalary / stats.totalEmployees,
+          averageMaleSalary: stats.totalMaleSalary / stats.totalMale,
+          averageFemaleSalary: stats.totalFemaleSalary / stats.totalFemale,
+          totalEmployees: stats.totalEmployees,
+          totalFemale: stats.totalFemale,
+          totalMale: stats.totalMale
+        }
+      };
+
+      res.send(responseData);
     }
   });
 

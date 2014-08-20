@@ -24,9 +24,10 @@ exports.update = function (progress) {
 },{"./common":1,"jquery":7}],3:[function(require,module,exports){
 var common = require("./common"),
     _ = require("lodash"),
-    $ = require("jquery");
+    $ = require("jquery"),
+    accounting = require("accounting");
 
-exports.show = function (employees) {
+exports.show = function (data) {
   common.hideEverything();
 
   var $table = $("<table class=\"table table-striped table-hover\"><tr>\n\
@@ -39,22 +40,32 @@ exports.show = function (employees) {
               </tr></table>");
 
 
-  _.each(employees, function (employee, id) {
-    $table.append("<tr>\n\
-                    <td>" + id + "</td>\n\
-                    <td>" + employee.birthdate + "</td>\
-                    <td><a href=\"#\" id=\"" + id + "\">" + employee.firstname + "</a></td>\
-                    <td><a href=\"#\" id=\"" + id + "\">" + employee.lastname + "</a></td>\
-                    <td>" + employee.sex + "</td>\
-                    <td>" + employee.start_date + "</td>\
+  _.each(data.employees, function (employee, id) {
+    $table.append("<tr> \
+                    <td>" + id + "</td> \
+                    <td>" + employee.birthdate + "</td> \
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.firstname + "</a></td> \
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.lastname + "</a></td> \
+                    <td>" + employee.sex + "</td> \
+                    <td>" + employee.start_date + "</td> \
                    </tr>");
   });
 
   $("#resultsDataContainer").html($table);
+
+  $("#statsContainer").html("<strong>Success!  Here are some stats...</strong> \
+                             <ul>\
+                              <li><strong>Total Employees: </strong>" + data.stats.totalEmployees + "</li> \
+                              <li><strong>Total Male Employees: </strong>" + data.stats.totalMale + "</li> \
+                              <li><strong>Total Female Employees: </strong>" + data.stats.totalFemale + "</li> \
+                              <li><strong>Average Salary: </strong>" + accounting.formatMoney(data.stats.averageSalary) + "</li> \
+                              <li><strong>Average Male Salary: </strong>" + accounting.formatMoney(data.stats.averageMaleSalary) + "</li> \
+                              <li><strong>Average Female Salary: </strong>" + accounting.formatMoney(data.stats.averageFemaleSalary) + "</li> \
+                             </ul>");
   $("#results").show();
 };
 
-},{"./common":1,"jquery":7,"lodash":8}],4:[function(require,module,exports){
+},{"./common":1,"accounting":9,"jquery":7,"lodash":8}],4:[function(require,module,exports){
 var $ = require("jquery"),
     accounting = require("accounting");
 
@@ -79,7 +90,7 @@ function generateTable(salaries) {
 exports.employeeClickHandler = function (data, event) {
   event.preventDefault();
   var target = $(event.target),
-      employee = data.employeeData[target.attr("id")];
+      employee = data.employees[target.attr("id")];
 
   $("#salaryModal .modal-title").html(employee.firstname + " " + employee.lastname);
   $("#salaryModal .modal-body").html(generateTable(employee.salaries));
@@ -112,7 +123,7 @@ var $ = require("jquery"),
     uploadForm = require("./components/uploadForm"),
     results = require("./components/results"),
     salaryViewer = require("./components/salaryViewer"),
-    data = { employeeData: {} };
+    data = {};
 
 /**
  * Uploads files and retrieves the result, while
@@ -132,20 +143,22 @@ function uploadFiles(employeesFile, salariesFile) {
   req.open("POST", "/analyze", true);
 
   req.onload = function () {
-    var response;
+    var parsedData;
 
     try {
-      response = JSON.parse(req.responseText);
+      parsedData = JSON.parse(req.responseText);
     } catch (ex) {
       return uploadForm.showError("Got an invalid response from the server");
     }
 
-    if (!response.success) {
-      return uploadForm.showError(response.error);
+    if (!parsedData.success) {
+      return uploadForm.showError(data.error);
     }
 
-    data.employeeData = response.data;
-    results.show(data.employeeData);
+    data.stats = parsedData.stats;
+    data.employees = parsedData.employees;
+
+    results.show(data);
   };
 
   req.onerror = function () {

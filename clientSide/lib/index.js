@@ -3,7 +3,7 @@ var $ = require("jquery"),
     uploadForm = require("./components/uploadForm"),
     results = require("./components/results"),
     salaryViewer = require("./components/salaryViewer"),
-    data = { employeeData: {} };
+    data = {};
 
 /**
  * Uploads files and retrieves the result, while
@@ -23,20 +23,22 @@ function uploadFiles(employeesFile, salariesFile) {
   req.open("POST", "/analyze", true);
 
   req.onload = function () {
-    var response;
+    var parsedData;
 
     try {
-      response = JSON.parse(req.responseText);
+      parsedData = JSON.parse(req.responseText);
     } catch (ex) {
       return uploadForm.showError("Got an invalid response from the server");
     }
 
-    if (!response.success) {
-      return uploadForm.showError(response.error);
+    if (!parsedData.success) {
+      return uploadForm.showError(data.error);
     }
 
-    data.employeeData = response.data;
-    results.show(data.employeeData);
+    data.stats = parsedData.stats;
+    data.employees = parsedData.employees;
+
+    results.show(data);
   };
 
   req.onerror = function () {

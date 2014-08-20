@@ -22,7 +22,7 @@ function generateTable(salaries) {
 exports.employeeClickHandler = function (data, event) {
   event.preventDefault();
   var target = $(event.target),
-      employee = data.employeeData[target.attr("id")];
+      employee = data.employees[target.attr("id")];
 
   $("#salaryModal .modal-title").html(employee.firstname + " " + employee.lastname);
   $("#salaryModal .modal-body").html(generateTable(employee.salaries));
