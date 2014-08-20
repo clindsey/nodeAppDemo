@@ -81,7 +81,7 @@ exports.employeeClickHandler = function (data, event) {
   var target = $(event.target),
       employee = data.employeeData[target.attr("id")];
 
-  $("#salaryModal .modal-title").html(employee.firstname + employee.lastname);
+  $("#salaryModal .modal-title").html(employee.firstname + " " + employee.lastname);
   $("#salaryModal .modal-body").html(generateTable(employee.salaries));
 
   // Hack to use Bootstrap's modals...
@@ -112,9 +112,7 @@ var $ = require("jquery"),
     uploadForm = require("./components/uploadForm"),
     results = require("./components/results"),
     salaryViewer = require("./components/salaryViewer"),
-    data = {
-      employeeData: {}
-    };
+    data = { employeeData: {} };
 
 /**
  * Uploads files and retrieves the result, while
@@ -134,8 +132,19 @@ function uploadFiles(employeesFile, salariesFile) {
   req.open("POST", "/analyze", true);
 
   req.onload = function () {
-    // TODO verify data//try catch
-    data.employeeData = JSON.parse(req.responseText).data;
+    var response;
+
+    try {
+      response = JSON.parse(req.responseText);
+    } catch (ex) {
+      return uploadForm.showError("Got an invalid response from the server");
+    }
+
+    if (!response.success) {
+      return uploadForm.showError(response.error);
+    }
+
+    data.employeeData = response.data;
     results.show(data.employeeData);
   };
 
@@ -199,7 +208,7 @@ $(document).ready(function () {
     show: false
   });
 
-// Events
+  // Events
   $("#upload").on("click", uploadFilesHandler);
   $("#startOver").on("click", startOverHandler);
   $("#resultsDataContainer").on("click", "a", salaryViewer.employeeClickHandler.bind(undefined, data));

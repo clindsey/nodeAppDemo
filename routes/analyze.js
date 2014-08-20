@@ -52,17 +52,20 @@ module.exports = function (req, res) {
       gotEmployees = true;
 
       file.pipe(csv.parse())
-          .on("error", function (error) { logAndSendError(error, req, res); })
+          .on("error", function (err) { error = err; })
           .pipe(employeeWriter)
-          .on("error", function (error) { logAndSendError(error, req, res); });
+          .on("error", function (err) { error = err; });
     }
     else if (fieldname === "salaries" && gotEmployees) {
+      // If there has been an error, we don't want to do
+      // any more parsing.
+      if (error) { return file.resume(); }
       gotSalaries = true;
 
       file.pipe(csv.parse())
-          .on("error", function (error) { logAndSendError(error, req, res); })
+          .on("error", function (err) { error = err; })
           .pipe(salaryWriter)
-          .on("error", function (error) { logAndSendError(error, req, res); });
+          .on("error", function (err) { error = err; });
     }
     else {
       error = new Error("Got invalid data");

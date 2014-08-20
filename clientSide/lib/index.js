@@ -23,8 +23,19 @@ function uploadFiles(employeesFile, salariesFile) {
   req.open("POST", "/analyze", true);
 
   req.onload = function () {
-    // TODO verify data//try catch
-    data.employeeData = JSON.parse(req.responseText).data;
+    var response;
+
+    try {
+      response = JSON.parse(req.responseText);
+    } catch (ex) {
+      return uploadForm.showError("Got an invalid response from the server");
+    }
+
+    if (!response.success) {
+      return uploadForm.showError(response.error);
+    }
+
+    data.employeeData = response.data;
     results.show(data.employeeData);
   };
 
@@ -80,7 +91,7 @@ function startOverHandler(event) {
   uploadForm.show();
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
   // Initialize Elements
 
   // Hack to use Bootstrap's modals...
