@@ -11,6 +11,7 @@ it("should be able to correctly join uploaded employee and salary data", functio
           .end(function (error, response) {
             if (error) { throw error; }
 
+            fs.writeFileSync("smallJoin.json", response.text);
             expect(response.text).to.be(fs.readFileSync(__dirname + "/fixtures/smallJoin.json",
                                         {encoding: "utf8"}));
             done();
