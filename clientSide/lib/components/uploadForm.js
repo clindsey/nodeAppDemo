@@ -8,6 +8,7 @@ exports.show = function () {
 
 exports.showError = function (error) {
   $("#error").html("<div class=\"alert alert-danger\" role=\"alert\"><strong>Uh-Oh! </strong>" + error + "</div>");
+  $("#error").show();
   exports.show();
 };
 
