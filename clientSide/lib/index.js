@@ -1,7 +1,8 @@
 var $ = require("jquery"),
     progress = require("./components/progressBar"),
     uploadForm = require("./components/uploadForm"),
-    results = require("./components/results");
+    results = require("./components/results"),
+    employeeData = {};
 
 /**
  * Uploads files and retrieves the result, while
@@ -22,7 +23,8 @@ function uploadFiles(employeesFile, salariesFile) {
 
   req.onload = function () {
     // TODO verify data//try catch
-    results.show(JSON.parse(req.responseText).data);
+    employeeData = JSON.parse(req.responseText).data;
+    results.show(employeeData);
   };
 
   req.onerror = function () {
@@ -77,7 +79,28 @@ function startOverHandler(event) {
   uploadForm.show();
 }
 
+$(document).ready(function() {
+  // Initialize Elements
+
+  // Hack to use Bootstrap's modals...
+  window.$("#salaryModal").modal({
+    show: false
+  });
+
 // Events
-$("#upload").on("click", uploadFilesHandler);
-$("#startOver").on("click", startOverHandler);
+  $("#upload").on("click", uploadFilesHandler);
+  $("#startOver").on("click", startOverHandler);
+  $("#resultsDataContainer").on("click", "a", function(event) {
+    event.preventDefault();
+    var target = $(event.target),
+        employee = employeeData[target.attr("id")];
+
+    $("#salaryModal .modal-title").html(employee.firstname + employee.lastname);
+    $("#salaryModal .modal-body").html(JSON.stringify(employee));
+
+    // Hack to use Bootstrap's modals...
+    window.$("#salaryModal").modal("show");
+  });
+});
+
 

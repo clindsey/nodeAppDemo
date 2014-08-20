@@ -43,14 +43,14 @@ exports.show = function (employees) {
     $table.append("<tr>\n\
                     <td>" + id + "</td>\n\
                     <td>" + employee.birthdate + "</td>\
-                    <td>" + employee.firstname + "</td>\
-                    <td>" + employee.lastname + "</td>\
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.firstname + "</a></td>\
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.lastname + "</a></td>\
                     <td>" + employee.sex + "</td>\
                     <td>" + employee.start_date + "</td>\
                    </tr>");
   });
 
-  $("#results div").html($table);
+  $("#resultsDataContainer").html($table);
   $("#results").show();
 };
 
@@ -76,7 +76,8 @@ exports.reset = function () {
 var $ = require("jquery"),
     progress = require("./components/progressBar"),
     uploadForm = require("./components/uploadForm"),
-    results = require("./components/results");
+    results = require("./components/results"),
+    employeeData = {};
 
 /**
  * Uploads files and retrieves the result, while
@@ -97,7 +98,8 @@ function uploadFiles(employeesFile, salariesFile) {
 
   req.onload = function () {
     // TODO verify data//try catch
-    results.show(JSON.parse(req.responseText).data);
+    employeeData = JSON.parse(req.responseText).data;
+    results.show(employeeData);
   };
 
   req.onerror = function () {
@@ -152,9 +154,30 @@ function startOverHandler(event) {
   uploadForm.show();
 }
 
+$(document).ready(function() {
+  // Initialize Elements
+
+  // Hack to use Bootstrap's modals...
+  window.$("#salaryModal").modal({
+    show: false
+  });
+
 // Events
-$("#upload").on("click", uploadFilesHandler);
-$("#startOver").on("click", startOverHandler);
+  $("#upload").on("click", uploadFilesHandler);
+  $("#startOver").on("click", startOverHandler);
+  $("#resultsDataContainer").on("click", "a", function(event) {
+    event.preventDefault();
+    var target = $(event.target),
+        employee = employeeData[target.attr("id")];
+
+    $("#salaryModal .modal-title").html(employee.firstname + employee.lastname);
+    $("#salaryModal .modal-body").html(JSON.stringify(employee));
+
+    // Hack to use Bootstrap's modals...
+    window.$("#salaryModal").modal("show");
+  });
+});
+
 
 
 },{"./components/progressBar":2,"./components/results":3,"./components/uploadForm":4,"jquery":6}],6:[function(require,module,exports){

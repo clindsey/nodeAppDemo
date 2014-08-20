@@ -19,13 +19,13 @@ exports.show = function (employees) {
     $table.append("<tr>\n\
                     <td>" + id + "</td>\n\
                     <td>" + employee.birthdate + "</td>\
-                    <td>" + employee.firstname + "</td>\
-                    <td>" + employee.lastname + "</td>\
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.firstname + "</a></td>\
+                    <td><a href=\"#\" id=\"" + id + "\">" + employee.lastname + "</a></td>\
                     <td>" + employee.sex + "</td>\
                     <td>" + employee.start_date + "</td>\
                    </tr>");
   });
 
-  $("#results div").html($table);
+  $("#resultsDataContainer").html($table);
   $("#results").show();
 };
