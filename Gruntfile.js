@@ -8,17 +8,20 @@ module.exports = function (grunt) {
         jshintrc: "./.jshintrc"
       }
     },
+
     release: {
       options: {
         npm: false
       }
     },
+
     browserify: {
       "nodeAppDemo-clientSide": {
         src: ["./clientSide/lib/*.js"],
         dest: "public/js/nodeDemoApp.js"
       }
     },
+
     exec: {
       setup: {
         cmd: "npm install && grunt browserify"
@@ -31,6 +34,17 @@ module.exports = function (grunt) {
       runProd: {
         cmd: "DEBUG=nodeAppDemo NODE_ENV=prod node ./app.js"
       }
+    },
+
+    simplemocha: {
+      options: {
+        globals: ["should"],
+        timeout: 3000,
+        ignoreLeaks: false,
+        ui: "bdd",
+        reporter: "spec"
+      },
+      all: {src: ["tests/*.js", "tests/**/*.js"]}
     }
   });
 
@@ -38,6 +52,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-release");
   grunt.loadNpmTasks("grunt-browserify");
   grunt.loadNpmTasks("grunt-exec");
+  grunt.loadNpmTasks("grunt-simple-mocha");
 
 
   // Default task.

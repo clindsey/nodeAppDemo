@@ -17,37 +17,85 @@ var Busboy = require("busboy"),
     employeeDataWriter = require("../lib/employeeDataWriter"),
     salaryDataWriter = require("../lib/salaryDataWriter");
 
+function logAndSendError(error, req, res) {
+  debug("[error] " + req.ip + " had the following error: ");
+  debug(error.stack);
+
+  res.status(400);
+  res.send({success: false, error: error.message});
+}
+
 
 module.exports = function(req, res) {
-  var joinedData = {}, employeeWriter, busboy;
+  var joinedData = {}, employeeWriter, salaryWriter, busboy, error = null,
+      gotEmployees = false, gotSalaries = false, busboyOptions;
 
-  busboy = new Busboy({headers: req.headers});
+  busboyOptions = {
+    headers: req.headers,
+    limits: {
+      files: 2
+    }
+  };
+
+  try {
+    busboy = new Busboy(busboyOptions);
+  } catch (ex) {
+    return logAndSendError(ex, req, res);
+  }
+
   employeeWriter = employeeDataWriter(joinedData);
   salaryWriter = salaryDataWriter(joinedData);
 
-  busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-    console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
-
-    var filePipe = file.pipe(csv.parse());
-
+  busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
     // The client will always send the employees data first, so we can rely on employees
     // data being ready when we start to parse salaries as they come in.
     if (fieldname === "employees") {
-      filePipe.pipe(employeeWriter);
-    }
-    else if (fieldname === "salaries") {
-      filePipe.pipe(salaryWriter);
-    }
+      gotEmployees = true;
 
+      file.pipe(csv.parse())
+          .on("error", function (error) { logAndSendError(error, req, res); })
+          .pipe(employeeWriter)
+          .on("error", function (error) { logAndSendError(error, req, res); });
+    }
+    else if (fieldname === "salaries" && gotEmployees) {
+      gotSalaries = true;
+
+      file.pipe(csv.parse())
+          .on("error", function (error) { logAndSendError(error, req, res); })
+          .pipe(salaryWriter)
+          .on("error", function (error) { logAndSendError(error, req, res); });
+    }
+    else {
+      error = new Error("Got invalid data");
+      file.resume();
+    }
   });
 
-  busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
-    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+  busboy.on("filesLimit", function () {
+    debug("[error] " + req.ip + " tried to send more than two files!");
   });
 
-  busboy.on('finish', function() {
-    debug("[info] Successfully parsed data for client at " + req.ip);
-    res.send({success: true, data: joinedData});
+  busboy.on("field", function(fieldname, val, fieldnameTruncated, valTruncated) {
+    console.log("Field [" + fieldname + "]: value: " + inspect(val));
+  });
+
+  busboy.on("finish", function() {
+    if (error) {
+      logAndSendError(error, req, res);
+    }
+    else if (!gotSalaries || !gotEmployees) {
+      error = new Error("Missing either salaries or employees data");
+      logAndSendError(error, req, res);
+    }
+    else {
+      debug("[info] Successfully parsed data for client at " + req.ip);
+      res.send({success: true, data: joinedData});
+    }
+  });
+
+  busboy.on("error", function (error) {
+    console.log("Error logged:");
+    logAndSendError(error, req, res);
   });
 
   req.pipe(busboy);
