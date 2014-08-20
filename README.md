@@ -26,6 +26,9 @@ You may also run the app directly by doing:
 node ./app.js
 ```
 
+Finally, the web-application portion of it can be found at
+http://localhost:PORT
+
 ### Available Options
 You may pass in environment variables when running 
 the app directly:
