@@ -1,7 +1,7 @@
 var $ = require("jquery"),
-    progress = require("./widgets/progressBar"),
-    uploadForm = require("./widgets/uploadForm"),
-    results = require("./widgets/results");
+    progress = require("./components/progressBar"),
+    uploadForm = require("./components/uploadForm"),
+    results = require("./components/results");
 
 /**
  * Uploads files and retrieves the result, while
@@ -21,7 +21,8 @@ function uploadFiles(employeesFile, salariesFile) {
   req.open("POST", "/analyze", true);
 
   req.onload = function () {
-    results.show("Done with status: " + req.status + " and data: " + req.responseText);
+    // TODO verify data//try catch
+    results.show(JSON.parse(req.responseText).data);
   };
 
   req.onerror = function () {
