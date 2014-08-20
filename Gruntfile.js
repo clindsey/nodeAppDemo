@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 
     exec: {
       setup: {
-        cmd: "npm install && grunt browserify"
+        cmd: "npm install && npm install --prefix ./clientSide/ && grunt browserify"
       },
 
       runDev: {
