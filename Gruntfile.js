@@ -28,11 +28,11 @@ module.exports = function (grunt) {
       },
 
       runDev: {
-        cmd: "DEBUG=nodeAppDemo NODE_ENV=development node ./app.js"
+        cmd: "DEBUG=nodeAppDemo NODE_ENV=development node ./server.js"
       },
 
       runProd: {
-        cmd: "DEBUG=nodeAppDemo NODE_ENV=prod node ./app.js"
+        cmd: "DEBUG=nodeAppDemo NODE_ENV=prod node ./server.js"
       }
     },
 
