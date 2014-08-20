@@ -1,5 +1,6 @@
 # nodeAppDemo
-This is just a little Express/Web-App demo.  Details coming soon.
+This is just a little Express/Web-App demo that lets you upload employee and salary csv files to
+have a join done between the two and display the data in a pretty web-based UI.
 
 ## Usage
 First run the setup script
@@ -53,6 +54,10 @@ grunt release:minor
 grunt release:major
 ```
 
+Finally, the automated tests can be run by doing
+```bash
+grunt simplemocha
+```
 
 ## License
 Unlicense
