@@ -29,6 +29,7 @@
     "supertest": "^0.13.0"
   },
   "dependencies": {
+    "accounting": "^0.4.1",
     "busboy": "^0.2.8",
     "csv": "^0.4.0",
     "debug": "^1.0.4",
