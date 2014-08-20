@@ -6,6 +6,7 @@ have a join done between the two and display the data in a pretty web-based UI.
 First run the setup script
 
 ```bash
+npm install
 grunt exec:setup
 ```
 

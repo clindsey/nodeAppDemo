@@ -36,6 +36,7 @@
     "errorhandler": "^1.1.1",
     "express": "^4.8.3",
     "formidable": "^1.0.15",
+    "grunt-exec": "^0.4.6",
     "hogan-express": "^0.5.2",
     "serve-favicon": "^2.0.1"
   }
