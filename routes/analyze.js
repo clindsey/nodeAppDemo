@@ -12,7 +12,6 @@
 
 var Busboy = require("busboy"),
     csv = require("csv"),
-    stream = require("stream"),
     debug = require("debug")("nodeAppDemo"),
     employeeDataWriter = require("../lib/employeeDataWriter"),
     salaryDataWriter = require("../lib/salaryDataWriter");
@@ -26,7 +25,7 @@ function logAndSendError(error, req, res) {
 }
 
 
-module.exports = function(req, res) {
+module.exports = function (req, res) {
   var joinedData = {}, employeeWriter, salaryWriter, busboy, error = null,
       gotEmployees = false, gotSalaries = false, busboyOptions;
 
@@ -46,7 +45,7 @@ module.exports = function(req, res) {
   employeeWriter = employeeDataWriter(joinedData);
   salaryWriter = salaryDataWriter(joinedData);
 
-  busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
+  busboy.on("file", function (fieldname, file) {
     // The client will always send the employees data first, so we can rely on employees
     // data being ready when we start to parse salaries as they come in.
     if (fieldname === "employees") {
@@ -75,11 +74,7 @@ module.exports = function(req, res) {
     debug("[error] " + req.ip + " tried to send more than two files!");
   });
 
-  busboy.on("field", function(fieldname, val, fieldnameTruncated, valTruncated) {
-    console.log("Field [" + fieldname + "]: value: " + inspect(val));
-  });
-
-  busboy.on("finish", function() {
+  busboy.on("finish", function () {
     if (error) {
       logAndSendError(error, req, res);
     }

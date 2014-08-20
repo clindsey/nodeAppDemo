@@ -1,11 +1,9 @@
 module.exports = function () {
-  var express = require("express")
-      http = require("http"),
-      path = require("path"),
-      debug = require("debug")("nodeAppDemo"),
-      favicon = require("serve-favicon"),
-      errorhandler = require("errorhandler"),
-      app = express();
+  var  express = require("express"),
+       path = require("path"),
+       favicon = require("serve-favicon"),
+       errorhandler = require("errorhandler"),
+       app = express();
 
   app.set("port", process.env.PORT || 3000);
 

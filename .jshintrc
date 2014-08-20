@@ -24,6 +24,7 @@
   "strict": false,
   "evil": true,
   "quotmark": "double",
+  "multistr": true,
   "globals": {
     "describe": true,
     "it": true

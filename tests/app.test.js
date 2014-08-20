@@ -64,7 +64,7 @@ it("should give the correct error if invalid csv files are given for both salari
           .end(function (error, response) {
             if (error) { throw error; }
 
-            expect(response.text).to.be('{"success":false,"error":"Invalid employee row: [\\"86679\\",\\"1964-07-09\\",\\"Chaitali\\",\\"Gargeya\\"]"}');
+            expect(response.text).to.be('{"success":false,"error":"Invalid employee row: [\\"86679\\",\\"1964-07-09\\",\\"Chaitali\\",\\"Gargeya\\"]"}'); // jshint ignore:line
             done();
           });
 });
@@ -78,7 +78,7 @@ it("should give the correct error if invalid csv is given just for salaries", fu
           .end(function (error, response) {
             if (error) { throw error; }
 
-            expect(response.text).to.be('{"success":false,"error":"Invalid salaries row: [\\"67494\\",\\"1999-04-23\\",\\"2000-04-22\\"]"}');
+            expect(response.text).to.be('{"success":false,"error":"Invalid salaries row: [\\"67494\\",\\"1999-04-23\\",\\"2000-04-22\\"]"}'); // jshint ignore:line
             done();
           });
 });
@@ -94,7 +94,7 @@ it("should give the correct error if invalid files are uploaded", function (done
           .end(function (error, response) {
             if (error) { throw error; }
 
-            expect(response.text).to.be('{"success":false,"error":"Got invalid data"}');
+            expect(response.text).to.be('{"success":false,"error":"Got invalid data"}'); // jshint ignore:line
             done();
           });
 });
