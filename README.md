@@ -9,6 +9,13 @@ First run the setup script
 grunt exec:setup
 ```
 
+If you don't have grunt installed, you can either run an npm install
+to get it or install it globally:
+
+```bash
+npm install grunt -g
+```
+
 You can then run in prod mode or dev mode.  Dev mode enables 
 errorhandler (https://github.com/expressjs/errorhandler).
 
