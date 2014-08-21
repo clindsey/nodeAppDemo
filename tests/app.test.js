@@ -101,6 +101,22 @@ it("should give the correct error if invalid csv is given just for salaries", fu
           });
 });
 
+it("should fail quickly even if a HUGE salaries files is uploaded (error should happen as soon as problem is detected in the stream)", function (done) {
+  this.timeout(500);
+
+  request(app)
+          .post("/analyze")
+          .attach("employees", __dirname + "/fixtures/employees_small.csv")
+          .attach("salaries", __dirname + "/fixtures/salaries_large_invalid.csv")
+          .expect(400)
+          .end(function (error, response) {
+            if (error) { throw error; }
+
+            expect(response.text).to.be('{"success":false,"error":"Invalid salaries row: [\\"86679\\",\\"55147\\",\\"2000-09-30\\"]"}'); // jshint ignore:line
+            done();
+          });
+});
+
 it("should give the correct error if invalid files are uploaded", function (done) {
   request(app)
           .post("/analyze")
