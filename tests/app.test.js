@@ -1,6 +1,7 @@
 var expect = require("expect.js"),
     request = require("supertest"),
-    app = require("../app.js")(), fs = require("fs");
+    app = require("../app.js")(),
+    fs = require("fs");
 
 it("should be able to correctly join uploaded employee and salary data", function (done) {
   request(app)
