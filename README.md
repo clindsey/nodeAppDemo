@@ -31,7 +31,7 @@ grunt exec:runProd
 You may also run the app directly by doing:
 
 ```bash
-node ./app.js
+./bin/server
 ```
 
 Finally, the web-application portion of it can be found at
@@ -42,7 +42,7 @@ You may pass in environment variables when running
 the app directly:
 
 ```bash
-PORT=42 DEBUG=nodeAppDemo node ./app.js
+PORT=42 DEBUG=nodeAppDemo node ./bin/server
 ```
 
 PORT - Port to run the server on.
