@@ -94,9 +94,9 @@ module.exports = function (req, res) {
         success: true,
         employees: joinedData,
         stats: {
-          averageSalary: stats.totalSalary / stats.totalEmployees,
-          averageMaleSalary: stats.totalMaleSalary / stats.totalMale,
-          averageFemaleSalary: stats.totalFemaleSalary / stats.totalFemale,
+          averageSalary: stats.totalSalary / (stats.totalMaleSalaries + stats.totalFemaleSalaries),
+          averageMaleSalary: stats.totalMaleSalary / stats.totalMaleSalaries,
+          averageFemaleSalary: stats.totalFemaleSalary / stats.totalFemaleSalaries,
           totalEmployees: stats.totalEmployees,
           totalFemale: stats.totalFemale,
           totalMale: stats.totalMale
