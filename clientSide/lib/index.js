@@ -32,7 +32,7 @@ function uploadFiles(employeesFile, salariesFile) {
     }
 
     if (!parsedData.success) {
-      return uploadForm.showError(data.error);
+      return uploadForm.showError(parsedData.error);
     }
 
     data.stats = parsedData.stats;
