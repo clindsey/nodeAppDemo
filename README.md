@@ -42,7 +42,7 @@ You may pass in environment variables when running
 the app directly:
 
 ```bash
-PORT=42 DEBUG=nodeAppDemo node ./bin/server
+PORT=42 DEBUG=nodeAppDemo ./bin/server
 ```
 
 PORT - Port to run the server on.
