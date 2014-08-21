@@ -14,18 +14,18 @@ If you don't have grunt installed, you can either run an npm install
 to get it or install it globally:
 
 ```bash
-npm install grunt -g
+npm install ./node_modules/.bin/grunt -g
 ```
 
 You can then run in prod mode or dev mode.  Dev mode enables 
 errorhandler (https://github.com/expressjs/errorhandler).
 
 ```bash
-grunt exec:runDev
+./node_modules/.bin/grunt exec:runDev
 ```
 
 ```bash
-grunt exec:runProd
+./node_modules/.bin/grunt exec:runProd
 ```
 
 You may also run the app directly by doing:
