@@ -7,7 +7,7 @@ First run the setup script
 
 ```bash
 npm install
-grunt exec:setup
+./node_modules/.bin/grunt exec:setup
 ```
 
 If you don't have grunt installed, you can either run an npm install
