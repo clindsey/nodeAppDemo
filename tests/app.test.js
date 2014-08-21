@@ -18,6 +18,23 @@ it("should be able to correctly join uploaded employee and salary data", functio
           });
 });
 
+it("should be able to correctly join uploaded employee and salary data, given an extra large salary file", function (done) {
+  this.timeout(20000);
+
+  request(app)
+          .post("/analyze")
+          .attach("employees", __dirname + "/fixtures/employees_small.csv")
+          .attach("salaries", __dirname + "/fixtures/salaries_large.csv")
+          .expect(200)
+          .end(function (error, response) {
+            if (error) { throw error; }
+
+            expect(response.text).to.be(fs.readFileSync(__dirname + "/fixtures/largeJoin.json",
+                                        {encoding: "utf8"}));
+            done();
+          });
+});
+
 it("should give the correct error if just /analyze is called", function (done) {
   request(app)
           .post("/analyze")
